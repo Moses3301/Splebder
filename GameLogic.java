@@ -61,8 +61,8 @@ public class GameLogic
       for (coust : card.getCoust()) {
         int newVal = (currPlayer.getNumOfTokens(coust.getColor()) + currPlayer.getDiscount(coust.getColor())) - coust.getPrice();
         if (newVal < 0){
-          currPlayer.setNumOfTokens(coust.getColor() , 0);
-          currPlayer.setNumOfTokens(eCOLOR.GOLD , currPlayer.getNumOfTokens(eCOLOR.GOLD) + newVal)
+          currPlayer.removeToken(coust.getColor() , currPlayer.getNumOfTokens(coust.getColor()));
+          currPlayer.removeToken(eCOLOR.GOLD , (-1)*newVal);
         }
         else{
           currPlayer.setNumOfTokens(coust.getColor(), newVal);
