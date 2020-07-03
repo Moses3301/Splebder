@@ -2,14 +2,15 @@ package gameLogic;
 
 public class Player{
   int[eCOLOR.values().length] gemBank;
-  int[eCOLOR.values().length] gemBank;
+  int[eCOLOR.values().length] discounts;
   ArrayList<Card> reservedCards;
   ArrayList<Card> cards;
+  ArrayList<NobleTile> nobles;
   int points;
 
   public Player(){
     for (int i = 0; i < eCOLOR.values().length; i++){
-      gemBank[i] = gemBank[i] = 0;
+      gemBank[i] = discounts[i] = 0;
     }
     reservedCards = new ArrayList();
     cards = new ArrayList();
@@ -42,5 +43,9 @@ public class Player{
 
   void removeToken(eCOLOR c, int count){
     gemBank[c.ordinal()] -= count;
+  }
+
+  void addNoble(NobleTile noble){
+    nobles.add(noble);
   }
 }

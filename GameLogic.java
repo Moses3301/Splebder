@@ -17,6 +17,8 @@ public class GameLogic
     Player currPlayer;
     Board board;
     int currPlayerIndex;
+    bool isNobleTriggered = false;
+    ArrayList<NobleTile> intrestedNobles;
 
     bool takeGemes(COLOR[2] gems){
       if (isActionDone = (gems[0] == gems[2]
@@ -38,12 +40,23 @@ public class GameLogic
       }
 
     bool reserveDevelopmentCard(DevelopmentCard card){
-      if (isActionDone = (currPlayer.getNumOfTokens(eCOLOR.GOLD) < 3 && board.getNumOfTokens(eCOLOR.GOLD) > 0 && !isActionDone)){
-        giveToken(eCOLOR.GOLD);
+      if (isActionDone = canReserveDevelopmentCard());
         currPlayer.getReservedCards().add(card);
-        board.getDevelopmentCard().remove(card);
+        board.getDevelopmentCardRow(card.getLevel()).remove(card);
+        board.getDevelopmentCardRow((card.getLevel()).add(getCardfromDeck(card.getLevel()));
       }
       return isActionDone;
+    }
+
+    bool reserveDevelopmentCard(int lvl){
+      if (isActionDone = canReserveDevelopmentCard());
+        currPlayer.getReservedCards().add(board.getCardfromDeck(lvl););
+      }
+      return isActionDone;
+    }
+
+    bool canReserveDevelopmentCard(){
+      return (currPlayer.getNumOfTokens(eCOLOR.GOLD) < 3 && board.getNumOfTokens(eCOLOR.GOLD) > 0 && !isActionDone));
     }
 
     bool purchaseDevelopmentCard(DevelopmentCard card){
@@ -57,6 +70,10 @@ public class GameLogic
       return isActionDone;
     }
 
+    ArrayList<DevelopmentCard> getDevelopmentCardRow(int lvl){
+      board.getDevelopmentCardRow(lvl-1);
+    }
+
     void buyCard(DevelopmentCard card){
       for (coust : card.getCoust()) {
         int newVal = (currPlayer.getNumOfTokens(coust.getColor()) + currPlayer.getDiscount(coust.getColor())) - coust.getPrice();
@@ -68,9 +85,15 @@ public class GameLogic
           currPlayer.setNumOfTokens(coust.getColor(), newVal);
         }
       }
+      updateTriggeredNobles();
+      if (intrestedNobles.lengh() == 1){
+        visitNoble(intrestedNobles.get(0));
+      }
     }
 
-    bool canBuyCard(DevelopmentCard card){
+    bool visit
+
+    bool canBuyCard(Card card){
       int miss = 0;
       for (coust : card.getCoust()) {
         int fixedPrice = coust.getPrice() - currPlayer.getDiscount(coust.getColor());
@@ -88,13 +111,36 @@ public class GameLogic
     }
 
     bool endTurn(){
-      if (currPlayer.getNumOfToken() > 10 || !isActionDone){
+      if (currPlayer.getNumOfToken() > 10 || !isActionDone || (intrestedNobles.length() == 0)){
         return false;
       }
       else{
         currPlayer = players.get((currPlayerIndex++) % players.size());
         isActionDone = false;
+        intrestedNobles.clear();
         return true;
       }
+    }
+
+    void visitNoble(NobleTile noble){
+      currPlayer.addNoble(noble);
+      board.getNobles().remove(noble);
+      board.getNobles().add(getNodlefromDeck());
+    }
+
+    void updateTriggeredNobles(){
+      for (noble : board.getNobles()) {
+        isNobleTriggered(noble);
+      }
+    }
+
+    bool isNobleTriggered(NobleTile noble){
+      for (requestDevelopmentCard : noble.getRequestDevelopmentCards()) {
+        if (requestDevelopmentCard.getAmount() <= currPlayer.addDiscount(requestDevelopmentCard.getColor())){
+          return false;
+        }
+      }
+      intrestedNobles.add(noble);
+      return true;
     }
 }
