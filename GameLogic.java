@@ -20,7 +20,7 @@ public class GameLogic
     bool isNobleTriggered = false;
     ArrayList<NobleTile> intrestedNobles;
 
-    bool takeGemes(COLOR[2] gems){
+    bool takeGemes(eCOLOR[2] gems){
       if (isActionDone = (gems[0] == gems[2]
         && board.getNumOfTokens(gem[0]) > 3 && !isActionDone)){
           for (gem : gems) {
@@ -30,7 +30,7 @@ public class GameLogic
         return isActionDone;
     }
 
-    bool takeGemes(COLOR[3] gems){
+    bool takeGemes(eCOLOR[3] gems){
       if (isActionDone = ((gems[0] != gems[1] != gems[2]) && !isActionDone){
         for (gem : gems)) {
           giveToken(gem);
@@ -44,19 +44,21 @@ public class GameLogic
         currPlayer.getReservedCards().add(card);
         board.getDevelopmentCardRow(card.getLevel()).remove(card);
         board.getDevelopmentCardRow((card.getLevel()).add(getCardfromDeck(card.getLevel()));
+        giveToken(eCOLOR.GOLD);
       }
       return isActionDone;
     }
 
     bool reserveDevelopmentCard(int lvl){
       if (isActionDone = canReserveDevelopmentCard());
-        currPlayer.getReservedCards().add(board.getCardfromDeck(lvl););
+        currPlayer.getReservedCards().add(board.getCardfromDeck(lvl));
+        giveToken(eCOLOR.GOLD);
       }
       return isActionDone;
     }
 
     bool canReserveDevelopmentCard(){
-      return (currPlayer.getNumOfTokens(eCOLOR.GOLD) < 3 && board.getNumOfTokens(eCOLOR.GOLD) > 0 && !isActionDone));
+      return (currPlayer.getReservedCards().lengh() < 3 && !isActionDone));
     }
 
     bool purchaseDevelopmentCard(DevelopmentCard card){
@@ -90,8 +92,6 @@ public class GameLogic
         visitNoble(intrestedNobles.get(0));
       }
     }
-
-    bool visit
 
     bool canBuyCard(Card card){
       int miss = 0;
@@ -130,13 +130,15 @@ public class GameLogic
 
     void updateTriggeredNobles(){
       for (noble : board.getNobles()) {
-        isNobleTriggered(noble);
+        if (isNobleTriggered(noble)){
+          intrestedNobles.add(noble);
+        }
       }
     }
 
     bool isNobleTriggered(NobleTile noble){
       for (requestDevelopmentCard : noble.getRequestDevelopmentCards()) {
-        if (requestDevelopmentCard.getAmount() <= currPlayer.addDiscount(requestDevelopmentCard.getColor())){
+        if (requestDevelopmentCard.getAmount() <= currPlayer.getDiscount(requestDevelopmentCard.getColor())){
           return false;
         }
       }

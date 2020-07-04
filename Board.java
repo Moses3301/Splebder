@@ -28,4 +28,12 @@ class Board{
   void getNodlefromDeck(){
     return nobleTilesDeck.pop();
   }
+
+  bool removeToken(eCOLOR c){
+    if (gemBank[c.ordinal()] > 0){
+      gemBank[c.ordinal()]--;
+      return true;
+    }
+    return false;
+  }
 }
