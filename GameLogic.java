@@ -1,72 +1,73 @@
-package gameLogic;
 
 public class GameLogic
 {
-//TODO: make eCOLOR class
-    enum eCOLOR{
-      EMERALD,
-      SAPPHIRE,
-      RUBY,
-      DIAMOND,
-      ONYX,
-      GOLD
-    }
-
-    bool isActionDone = false;
+    boolean  isActionDone = false;
     ArrayList<Player> players;
     Player currPlayer;
     Board board;
     int currPlayerIndex;
-    bool isNobleTriggered = false;
+    boolean  isNobleTriggered = false;
     ArrayList<NobleTile> intrestedNobles;
 
-    bool takeGemes(eCOLOR[2] gems){
-      if (isActionDone = (gems[0] == gems[2]
-        && board.getNumOfTokens(gem[0]) > 3 && !isActionDone)){
-          for (gem : gems) {
-            giveToken(gem);
-          }
-        }
-        return isActionDone;
-    }
-
-    bool takeGemes(eCOLOR[3] gems){
-      if (isActionDone = ((gems[0] != gems[1] != gems[2]) && !isActionDone){
-        for (gem : gems)) {
-          giveToken(gem);
-        }
+    boolean  takeGemes(COLOR[] gems){
+      if (isActionDone) return false;
+      switch(gems.lengh){
+          case 2:
+              if (gems[0]==gems[1] && board.getNumOfTokens(gems[0]) > 2){
+                giveToken(gems[0],2);
+                return true;
+              }
+              break;
+          case 3:
+              boolean isValidInput = gems[0]!=gems[1] && gems[0]!=gems[2] && gems[1]!=gems[2];
+              boolean isGemesInBank = true;
+              for (int i=0;i<3;i++){
+                if (board.getNumOfTokens(gems[i])<1){
+                  isGemesInBank =  false;
+                  break;
+                }
+              }
+              if (isValidInput && isGemesInBank){
+                for (int i=0;i<3;i++){
+                  giveToken(gem[i]);
+                  return true;
+                  }
+                }
+          default:
+            break;
+            }
+            return false;
       }
-        return isActionDone;
-      }
+    
 
-    bool reserveDevelopmentCard(DevelopmentCard card){
-      if (isActionDone = canReserveDevelopmentCard());
+    boolean  reserveDevelopmentCard(DevelopmentCard card){
+      if (isActionDone = canReserveDevelopmentCard()){
         currPlayer.getReservedCards().add(card);
         board.getDevelopmentCardRow(card.getLevel()).remove(card);
-        board.getDevelopmentCardRow((card.getLevel()).add(getCardfromDeck(card.getLevel()));
+        board.getDevelopmentCardRow(card.getLevel()).add(getCardfromDeck(card.getLevel()));
         giveToken(eCOLOR.GOLD);
       }
       return isActionDone;
     }
 
-    bool reserveDevelopmentCard(int lvl){
-      if (isActionDone = canReserveDevelopmentCard());
+    boolean  reserveDevelopmentCard(int lvl){
+      if (isActionDone = canReserveDevelopmentCard()){
         currPlayer.getReservedCards().add(board.getCardfromDeck(lvl));
         giveToken(eCOLOR.GOLD);
       }
       return isActionDone;
     }
 
-    bool canReserveDevelopmentCard(){
-      return (currPlayer.getReservedCards().lengh() < 3 && !isActionDone));
+    boolean  canReserveDevelopmentCard(){
+      return (currPlayer.getReservedCards().lengh() < 3 && !isActionDone);
     }
 
-    bool purchaseDevelopmentCard(DevelopmentCard card){
+    boolean  purchaseDevelopmentCard(DevelopmentCard card){
       if (isActionDone = (canBuyCard(card) && !isActionDone)){
-        buyCard(card)
+        buyCard(card);
         currPlayer.getCards().add(card);
         card.addNoblepoints(card.getNoblePoint());
-        currPlayer.addDiscount(card.getCollor());
+        currPlayer.addDiscount(card.getColor());
         isActionDone = true;
       }
       return isActionDone;
@@ -77,7 +78,7 @@ public class GameLogic
     }
 
     void buyCard(DevelopmentCard card){
-      for (coust : card.getCoust()) {
+      for (gemStack coust : card.getCoust()) {
         int newVal = (currPlayer.getNumOfTokens(coust.getColor()) + currPlayer.getDiscount(coust.getColor())) - coust.getPrice();
         if (newVal < 0){
           currPlayer.removeToken(coust.getColor() , currPlayer.getNumOfTokens(coust.getColor()));
@@ -93,24 +94,30 @@ public class GameLogic
       }
     }
 
-    bool canBuyCard(Card card){
+    boolean  canBuyCard(DevelopmentCard card){
       int miss = 0;
-      for (coust : card.getCoust()) {
-        int fixedPrice = coust.getPrice() - currPlayer.getDiscount(coust.getColor());
+      for (gemStack coust : card.getCoust()) {
+        int fixedPrice = coust.getAmount() - currPlayer.getDiscount(coust.getColor());
         int aferPay = currPlayer.getNumOfTokens(coust.getColor()) - fixedPrice;
         if (aferPay < 0){
-          miss += (-1)*aferPay
+          miss += (-1)*aferPay;
         }
       }
       return miss < currPlayer.getNumOfTokens(eCOLOR.GOLD);
     }
 
     void giveToken(COLOR color){
-      currPlayer.addToken(color);
-      board.removeToken(color);
+      giveToken(color,1);
     }
 
-    bool endTurn(){
+    void giveToken(COLOR color, int n){
+      for (int i=0;i<n;i++){
+        currPlayer.addToken(color);
+        board.removeToken(color);
+      }
+    }
+
+    boolean  endTurn(){
       if (currPlayer.getNumOfToken() > 10 || !isActionDone || (intrestedNobles.length() == 0)){
         return false;
       }
@@ -127,17 +134,26 @@ public class GameLogic
       board.getNobles().remove(noble);
       board.getNobles().add(getNodlefromDeck());
     }
+    
+    boolean askNobletoVisit(NobleTile noble){
+        if (!isActionDone) return false;
+        if (intrestedNobles.remove(noble)){
+            visitNoble(noble);
+            return true;
+        }
+        return false;
+    }
 
     void updateTriggeredNobles(){
-      for (noble : board.getNobles()) {
+      for (NobleTile noble : board.getNobles()) {
         if (isNobleTriggered(noble)){
           intrestedNobles.add(noble);
         }
       }
     }
 
-    bool isNobleTriggered(NobleTile noble){
-      for (requestDevelopmentCard : noble.getRequestDevelopmentCards()) {
+    boolean  isNobleTriggered(NobleTile noble){
+      for (gemStack requestDevelopmentCard : noble.getRequestDevelopments()) {
         if (requestDevelopmentCard.getAmount() <= currPlayer.getDiscount(requestDevelopmentCard.getColor())){
           return false;
         }

@@ -1,15 +1,14 @@
-package gameLogic;
-
-int NUM_OF_LVL = 3;
+import java.util.ArrayList;
+import java.util.Stack;
 
 class Board{
-  int[eCOLOR.values().length] gemBank;
-  Stack<DevelopmentCard>[NUM_OF_LVL] cardDecks;
-  ArrayList<DevelopmentCard>[NUM_OF_LVL] cardsRow;
+  int[] gemBank = new int[COLOR.values().length];
+  Stack<DevelopmentCard>[] cardDecks = new Stack[3];
+  ArrayList<DevelopmentCard>[] cardsRow = new ArrayList[3];
   ArrayList<NobleTile> nobleTiles;
-  Stack<DevelopmentCard> nobleTilesDeck;
+  Stack<NobleTile> nobleTilesDeck;
 
-  int getNumOfTokens(eCOLOR c){
+  int getNumOfTokens(COLOR c){
     return gemBank[c.ordinal()];
   }
 
@@ -18,18 +17,18 @@ class Board{
   }
 
   DevelopmentCard getCardfromDeck(int lvl){
-    return cardDecks.pop();
+    return cardDecks[lvl].pop();
   }
 
   ArrayList<NobleTile> getNobles(){
     return nobleTiles;
   }
 
-  void getNodlefromDeck(){
+  NobleTile getNodlefromDeck(){
     return nobleTilesDeck.pop();
   }
 
-  bool removeToken(eCOLOR c){
+  boolean removeToken(COLOR c){
     if (gemBank[c.ordinal()] > 0){
       gemBank[c.ordinal()]--;
       return true;

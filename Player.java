@@ -1,15 +1,15 @@
-package gameLogic;
+import java.util.ArrayList;
 
-public class Player{
-  int[eCOLOR.values().length] gemBank;
-  int[eCOLOR.values().length] discounts;
-  ArrayList<Card> reservedCards;
-  ArrayList<Card> cards;
+ public class Player{
+  int[] gemBank = new int[COLOR.values().length];
+  int[] discounts = new int[COLOR.values().length];
+  ArrayList<DevelopmentCard> reservedCards;
+  ArrayList<DevelopmentCard> cards;
   ArrayList<NobleTile> nobles;
   int points;
 
   public Player(){
-    for (int i = 0; i < eCOLOR.values().length; i++){
+    for (int i = 0; i < COLOR.values().length; i++){
       gemBank[i] = discounts[i] = 0;
     }
     reservedCards = new ArrayList();
@@ -17,31 +17,31 @@ public class Player{
     int points = 0;
   }
 
-  int getNumOfTokens(eCOLOR c){
+  int getNumOfTokens(COLOR c){
     return gemBank[c.ordinal()];
   }
 
-  ArrayList<Card> getReservedCards(){
+  ArrayList<DevelopmentCard> getReservedCards(){
     return reservedCards;
   }
 
-  ArrayList<Card> getCards(){
+  ArrayList<DevelopmentCard> getCards(){
     return cards;
   }
 
-  void addDiscount(eCOLOR c){
+  void addDiscount(COLOR c){
     discounts[c.ordinal()]++;
   }
 
-  void getDiscount(eCOLOR c){
+  int getDiscount(COLOR c){
     return discounts[c.ordinal()];
   }
 
-  void addToken(eCOLOR c){
+  void addToken(COLOR c){
     gemBank[c.ordinal()]++;
   }
 
-  void removeToken(eCOLOR c, int count){
+  void removeToken(COLOR c, int count){
     gemBank[c.ordinal()] -= count;
   }
 

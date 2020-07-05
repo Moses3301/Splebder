@@ -1,4 +1,3 @@
-package mypack;
 
 class Person{
 
