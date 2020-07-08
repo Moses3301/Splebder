@@ -5,6 +5,7 @@ public class DevelopmentCard
     COLOR type;
     ArrayList<GemStack> coust;
     int prestigePoints;
+    int level;
     
     COLOR getColor(){
         return type;
@@ -16,5 +17,9 @@ public class DevelopmentCard
     
     int getPrestigePoints(){
         return prestigePoints;
+    }
+    
+    int getLevel(){
+        return level;
     }
 }

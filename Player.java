@@ -21,6 +21,22 @@ import java.util.ArrayList;
     return gemBank[c.ordinal()];
   }
 
+  int getNumOfTokens(){
+    int sum;
+    for (int n : gemBank) {
+      sum += n;
+    }
+    return sum;
+  }
+
+  void addPoints(int n){
+      points+=n;
+  }
+
+  int getPoint(){
+    return points;
+   }
+
   ArrayList<DevelopmentCard> getReservedCards(){
     return reservedCards;
   }
