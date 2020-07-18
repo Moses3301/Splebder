@@ -35,4 +35,9 @@ class Board{
     }
     return false;
   }
+
+  boolean addToken(COLOR c){
+    gemBank[c.ordinal()]++;
+    return true;
+  }
 }

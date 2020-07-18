@@ -1,158 +1,217 @@
 import java.util.ArrayList;
 
-public class GameLogic
-{
-    boolean  isActionDone = false;
+public class GameLogic {
+    boolean isActionDone = false;
     ArrayList<Player> players;
     Player currPlayer;
     Board board;
     int currPlayerIndex;
-    boolean  isNobleTriggered = false;
     ArrayList<NobleTile> intrestedNobles;
+    ArrayList<COLOR> gemesTaken;
 
-    boolean  takeTwoGemes(COLOR gem){
-      if ( isActionDone = !isActionDone && (board.getNumOfTokens(gem) > 3)){
-        giveToken(gem,1);
-      }
-      return isActionDone;
-    }
 
-    boolean  takeTwoGemes(COLOR gem1, COLOR gem2, COLOR gem3){
-      boolean isGemesDifferent = (gem1!=gem2) && (gem1!=gem3) && (gem2!=gem3);
-      boolean isGemesAvailable = (board.getNumOfTokens(gem1) > 0) && (board.getNumOfTokens(gem2) > 0) && (board.getNumOfTokens(gem3) > 0);
-      if ( isActionDone = !isActionDone && isGemesDifferent && isGemesAvailable ) ){
-        giveToken(gem,1);
-      }
-      return isActionDone;
-    }
-
-    boolean  reserveDevelopmentCard(DevelopmentCard card){
-      if (isActionDone = canReserveDevelopmentCard() && board.getDevelopmentCardRow(card.getLevel()).remove(card)){
-        currPlayer.getReservedCards().add(card);
-        throwCard(card.getLevel());
-        giveToken(COLOR.GOLD);
-      }
-      return isActionDone;
-    }
-
-    void throwCard(int level){
-      board.getDevelopmentCardRow(level).add(board.getCardfromDeck(level));
-    }
-
-    boolean  reserveDevelopmentCard(int level){
-      if (isActionDone = canReserveDevelopmentCard()){
-        currPlayer.getReservedCards().add(board.getCardfromDeck(level));
-        giveToken(COLOR.GOLD);
-      }
-      return isActionDone;
-    }
-
-    boolean  canReserveDevelopmentCard(){
-      return (currPlayer.getReservedCards().size() < 3 && !isActionDone);
-    }
-
-    boolean  purchaseDevelopmentCard(DevelopmentCard card){
-      if (canBuyCard(card) && !isActionDone){
-        if (board.getDevelopmentCardRow(card.getLevel()).remove(card) || currPlayer.getReservedCards().remove(card)]){
-          buyCard(card);
-          currPlayer.getCards().add(card);
-          currPlayer.addPoints(card.getPrestigePoints());
-          currPlayer.addDiscount(card.getColor());
-          isActionDone = true;
+    boolean takeGem(COLOR gem) {
+        if (isActionDone) {
+            return false;
         }
-      }
-      return false;
-    }
-
-    void buyCard(DevelopmentCard card){
-      for (gemStack coust : card.getCoust()) {
-        int newVal = (currPlayer.getNumOfTokens(coust.getColor()) + currPlayer.getDiscount(coust.getColor())) - coust.getPrice();
-        if (newVal < 0){
-          currPlayer.removeToken(coust.getColor() , currPlayer.getNumOfTokens(coust.getColor()));
-          currPlayer.removeToken(eCOLOR.GOLD , (-1)*newVal);
+        if (board.getNumOfTokens(gem) == 0) {
+            return false;
         }
-        else{
-          currPlayer.setNumOfTokens(coust.getColor(), newVal);
+        int numOfGemTaken = gemesTaken.size();
+        //the second gem
+        if (numOfGemTaken == 1) {
+            //take two same gems
+            if (gem == gemesTaken.get(0)) {
+                if (board.getNumOfTokens(gem) < 2) {
+                    return false;
+                }
+                isActionDone = true;
+            }
         }
-      }
-      updateTriggeredNobles();
-      if (intrestedNobles.lengh() == 1){
-        visitNoble(intrestedNobles.get(0));
-      }
-    }
-
-    boolean  canBuyCard(DevelopmentCard card){
-      int miss = 0;
-      for (gemStack coust : card.getCoust()) {
-        int fixedPrice = coust.getAmount() - currPlayer.getDiscount(coust.getColor());
-        int aferPay = currPlayer.getNumOfTokens(coust.getColor()) - fixedPrice;
-        if (aferPay < 0){
-          miss += (-1)*aferPay;
+        //the third gem
+        if (numOfGemTaken == 2) {
+            if (gemesTaken.get(0) == gem || gemesTaken.get(2) == gem) {
+                return false;
+            }
+            isActionDone = true;
         }
-      }
-      return miss < currPlayer.getNumOfTokens(eCOLOR.GOLD);
-    }
-
-    void giveToken(COLOR color){
-      giveToken(color,1);
-    }
-
-    void giveToken(COLOR color, int n){
-      for (int i=0;i<n;i++){
-        currPlayer.addToken(color);
-        board.removeToken(color);
-      }
-    }
-
-    boolean  endTurn(){
-      if (currPlayer.getNumOfToken() > 10 || !isActionDone || (intrestedNobles.length() != 0)){
-        return false;
-      }
-      else{
-        currPlayer = players.get((currPlayerIndex++) % players.size());
-        isActionDone = false;
-        intrestedNobles.clear();
+        giveToken(gem);
+        gemesTaken.add(gem);
+        if (isActionDone) {
+            gemesTaken.clear();
+            endTurn();
+        }
         return true;
-      }
     }
 
-    void visitNoble(NobleTile noble){
-      currPlayer.addNoble(noble);
-      board.getNobles().remove(noble);
-      board.getNobles().add(getNodlefromDeck());
+    boolean removeGem(COLOR color) {
+        //after action done
+        if (isActionDone && currPlayer.getNumOfTokens() > 10) {
+            return removeToken(color);
+        }
+        //before action done
+        else {
+            if (gemesTaken.remove(color)) {
+                return removeToken(color);
+            }
+        }
+        return false;
     }
 
-    boolean askNobletoVisit(NobleTile noble){
-        if (!isActionDone) return false;
-        if (intrestedNobles.remove(noble)){
-            visitNoble(noble);
+    public static void main(String[] args) {
+        boolean bool = false;
+        System.out.println(bool);
+        System.out.println(bool = true);
+        System.out.println(bool);
+    }
+
+    boolean reserveDevelopmentCard(DevelopmentCard card) {
+        if (isActionDone) {
+            return false;
+        }
+        //remove the card from the board if possible
+        if (board.getDevelopmentCardRow(card.getLevel()).remove(card)) {
+            currPlayer.getReservedCards().add(card);
+            throwCard(card.getLevel());
+            // give gold token if possible
+            giveToken(COLOR.GOLD);
+            isActionDone = true;
+            endTurn();
+            return true;
+        }
+        return false;
+    }
+
+    void throwCard(int level) {
+        board.getDevelopmentCardRow(level).add(board.getCardfromDeck(level));
+    }
+
+    boolean removeToken(COLOR color, int n) {
+        if (currPlayer.getNumOfTokens(color) < n) {
+            return false;
+        }
+        for (int i = 0; i < n; i++) {
+            removeToken(color);
+        }
+        return true;
+    }
+
+    boolean giveToken(COLOR color) {
+        if (board.removeToken(color)) {
+            currPlayer.addToken(color);
+            return true;
+        }
+        return false;
+    }
+
+    boolean removeToken(COLOR color) {
+        if (currPlayer.removeToken(color)) {
+            board.addToken(color);
+            return true;
+        }
+        return false;
+    }
+
+    boolean reserveDevelopmentCard(int level) {
+        if (isActionDone) {
+            return false;
+        }
+        if (currPlayer.getReservedCards().size() < 3) {
+            currPlayer.getReservedCards().add(board.getCardfromDeck(level));
+            giveToken(COLOR.GOLD);
+            isActionDone = true;
+            endTurn();
+            return true;
+        }
+        return false;
+    }
+
+    boolean purchaseDevelopmentCard(DevelopmentCard card) {
+        if (isActionDone) {
+            return false;
+        }
+        if (canBuyCard(card)) {
+            if (board.getDevelopmentCardRow(card.getLevel()).remove(card) || currPlayer.getReservedCards().remove(card)) {
+                buyCard(card);
+                updateTriggeredNobles();
+                if (intrestedNobles.size() == 1) {
+                    visitNoble(intrestedNobles.get(0));
+                }
+                isActionDone = true;
+                endTurn();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    boolean canBuyCard(DevelopmentCard card) {
+        int goldToken = currPlayer.getNumOfTokens(COLOR.GOLD);
+        int diff = calMissTokens(card);
+        return (goldToken >= diff);
+    }
+
+    void buyCard(DevelopmentCard card) {
+        for (int i = 0; i < calMissTokens(card); i++) {
+            removeToken(COLOR.GOLD);
+        }
+        for (GemStack coust : card.getCoust()) {
+            removeToken(coust.color, coust.amount);
+        }
+        currPlayer.getCards().add(card);
+        currPlayer.addPoints(card.getPrestigePoints());
+        currPlayer.addDiscount(card.getColor());
+    }
+
+    int calMissTokens(DevelopmentCard card) {
+        int diff = 0;
+        int res = 0;
+        for (GemStack coust : card.getCoust()) {
+            diff = coust.amount - currPlayer.getNumOfTokens(card.getColor());
+            if (diff < 0) {
+                res += (-1) * diff;
+            }
+        }
+        return res;
+    }
+
+    void updateTriggeredNobles() {
+        for (NobleTile noble : board.getNobles()) {
+            if (isNobleTriggered(noble)) {
+                intrestedNobles.add(noble);
+            }
+        }
+    }
+
+    boolean visitNoble(NobleTile noble) {
+        if (intrestedNobles.remove(noble)) {
+            currPlayer.addNoble(noble);
+            currPlayer.addPoints(noble.prestigePoints);
+            board.getNobles().remove(noble);
+            board.getNobles().add(board.getNodlefromDeck());
             intrestedNobles.clear();
             return true;
         }
         return false;
     }
 
-    void updateTriggeredNobles(){
-      for (NobleTile noble : board.getNobles()) {
-        if (isNobleTriggered(noble)){
-          intrestedNobles.add(noble);
+    boolean isNobleTriggered(NobleTile noble) {
+        for (GemStack requestDevelopmentCard : noble.getRequestDevelopments()) {
+            if (requestDevelopmentCard.getAmount() <= currPlayer.getDiscount(requestDevelopmentCard.getColor())) {
+                return false;
+            }
         }
-      }
+        intrestedNobles.add(noble);
+        return true;
     }
 
-    boolean  isNobleTriggered(NobleTile noble){
-      for (gemStack requestDevelopmentCard : noble.getRequestDevelopments()) {
-        if (requestDevelopmentCard.getAmount() <= currPlayer.getDiscount(requestDevelopmentCard.getColor())){
-          return false;
-        }
-      }
-      intrestedNobles.add(noble);
-      return true;
+    boolean  endTurn(){
+        if (!isActionDone) { return false; }
+        if (currPlayer.getNumOfTokens() > 10) { return false; }
+        if (intrestedNobles.size() != 0) {return false;}
+        currPlayer = players.get((currPlayerIndex++) % players.size());
+        isActionDone = false;
+        return true;
     }
 
-    boolean removeGem(COLOR color){
-      if (isActionDone && currPlayer.getNumOfTokens()>10){
-        currPlayer.removeToken(color,1);
-      }
-    }
 }

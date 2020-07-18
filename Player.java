@@ -22,7 +22,7 @@ import java.util.ArrayList;
   }
 
   int getNumOfTokens(){
-    int sum;
+    int sum = 0;
     for (int n : gemBank) {
       sum += n;
     }
@@ -57,11 +57,20 @@ import java.util.ArrayList;
     gemBank[c.ordinal()]++;
   }
 
-  void removeToken(COLOR c, int count){
-    gemBank[c.ordinal()] -= count;
+  boolean removeToken(COLOR c){
+      if (gemBank[c.ordinal()]<0) { return false; }
+         gemBank[c.ordinal()] --;
+         return true;
+  }
+
+  boolean removeToken(COLOR c, int count){
+      if (gemBank[c.ordinal()]<0) { return false; }
+      gemBank[c.ordinal()] -= count;
+      return true;
   }
 
   void addNoble(NobleTile noble){
     nobles.add(noble);
   }
+
 }
